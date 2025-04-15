@@ -1,10 +1,9 @@
 import React from 'react'
 import { Box,Typography,Dialog, TextField, Button } from '@mui/material'
 import { useState } from 'react'
-import { useTheme } from '@mui/material/styles'
 import {addCompany} from '../services/companyService.js';
-const AddCompany = ({ open, closeForm }) => {
-    const theme = useTheme();
+
+const AddCompany = ({ open, closeForm,onCompanyAdded }) => {
     const [formData, setFormData] = useState({
         companyName: "",
         location: "",
@@ -33,6 +32,7 @@ const AddCompany = ({ open, closeForm }) => {
                 foundedOn: "",
                 city: ""
             });
+            onCompanyAdded();
             closeForm();
         })
     }
@@ -123,7 +123,7 @@ const AddCompany = ({ open, closeForm }) => {
                     fullWidth
                 />
                 </Box>
-                <Button onClick={handleSubmit} variant="contained" sx={{marginLeft:"35%" ,width: "25%", backgroundColor: theme.palette.primary.main }}>Save
+                <Button onClick={handleSubmit} variant="contained" sx={{marginLeft:"35%" ,width: "25%", backgroundColor:'#8F00FF' }}>Save
                 </Button>
 
             </div>

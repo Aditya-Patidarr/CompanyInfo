@@ -29,25 +29,40 @@ export const getCompaniesByAverage = async (req, res) => {
       const companies = await Review.aggregate([
         {
           $group: {
-            _id: '$companyId', 
-            averageRating: { $avg: '$rating' }, 
-          },
+            _id: '$companyId',
+            averageRating: { $avg: '$rating' },
+          }
+        },
+        {
+          $project: {
+            averageRating: {
+              $divide: [
+                { $round: [{ $multiply: ['$averageRating', 2] }, 0] },
+                2
+              ]
+            },
+            companyId: '$_id'
+          }
         },
         {
           $lookup: {
-            from: 'companies', 
-            localField: '_id', 
-            foreignField: '_id', 
-            as: 'company', 
-          },
+            from: 'companies',
+            localField: 'companyId',
+            foreignField: '_id',
+            as: 'company'
+          }
         },
+        { $unwind: '$company' },
         {
-          $unwind: '$company', 
+          $replaceRoot: {
+            newRoot: {
+              $mergeObjects: ['$company', { averageRating: '$averageRating' }]
+            }
+          }
         },
-        {
-          $sort: { averageRating: -1 }, 
-        }
+        { $sort: { averageRating: -1 } }
       ]);
+      
       res.status(200).json(companies);
     } catch (error) {
       console.error('Error during aggregation:', error);

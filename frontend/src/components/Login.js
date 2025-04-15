@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Typography, TextField, Button } from '@mui/material'
 import { useState } from 'react'
-import { useTheme } from '@mui/material/styles'
 import { login } from '../services/userService'
 import { useNavigate } from 'react-router-dom'
 const Login = () => {
@@ -10,24 +9,34 @@ const Login = () => {
         email: "",
         password: "",
     });
-    const theme = useTheme();
     const handleSubmit = (event) => {
         event.preventDefault();
         const submitData = async () => {
             try {
                 const response = await login(formData);
                 console.log(response);
+                return response;
             } catch (error) {
                 console.error('Error:', error);
+                return error;
             }
 
         }
-        submitData();
-        setFormData({
-            email: "",
-            password: "",
-        });
-        return navigate('/layout')
+        submitData()
+        .then((data)=>{
+            console.log(data)
+            return navigate('/layout')
+        })
+        .catch((err)=>{
+            console.log(err);
+            return navigate('/login');
+        })
+        .finally(()=>{
+            setFormData({
+                email: "",
+                password: "",
+            });
+        })  
     }
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -40,7 +49,7 @@ const Login = () => {
         <Box sx={{ display: 'flex', justifyContent: "center", alignItems: "center", marginTop: "50px" }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '20px', width: "50%" }}>
                 <Box>
-                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: `${theme.palette.primary.main}` }}>
+                    <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#8F00FF' }}>
                         Login
                     </Typography>
                 </Box>
@@ -72,7 +81,7 @@ const Login = () => {
                     />
                 </Box>
                 <Box>
-                    <Button variant="contained" onClick={handleSubmit} sx={{ backgroundColor: theme.palette.primary.main }}>
+                    <Button variant="contained" onClick={handleSubmit} sx={{ backgroundColor: '#8F00FF' }}>
                         Save
                     </Button>
                 </Box>

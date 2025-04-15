@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, Typography, TextField, Button } from '@mui/material'
 import { useState } from 'react'
-import { useTheme } from '@mui/material/styles'
 import { register } from '../services/userService'
 import { useNavigate } from 'react-router-dom'
 const Register = () => {
@@ -11,25 +10,31 @@ const Register = () => {
         email: "",
         password: "",
     });
-    const theme = useTheme();
     const handleSubmit = (event) => {
         event.preventDefault();
         const submitData = async () => {
             try {
                 const response = await register(formData);
                 console.log(response);
+                return response;
             } catch (error) {
                 console.error('Error:', error);
+                return error;
             }
 
         }
-        submitData();
+        const response = submitData();
         setFormData({
-            fullName: "",
+            fullName:"",
             email: "",
             password: "",
         });
-        return navigate('/login')
+        if(response){
+            return navigate('/layout')
+        }
+        else{
+            return navigate('/login')
+        } 
     }
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -42,7 +47,7 @@ const Register = () => {
         <Box sx={{ display: 'flex', justifyContent: "center", alignItems:"center",marginTop:"50px" }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '20px',width:"50%" }}>
                 <Box>
-                    <Typography variant="h4" sx={{ color:`${theme.palette.primary.main}`,fontWeight: 'bold' }}>
+                    <Typography variant="h4" sx={{ color:'#8F00FF',fontWeight: 'bold' }}>
                         Register
                     </Typography>
                 </Box>
@@ -88,7 +93,7 @@ const Register = () => {
                     />
                 </Box>
                 <Box>
-                    <Button variant="contained" onClick={handleSubmit} sx={{ backgroundColor: `${theme.palette.primary.main}` }}>
+                    <Button variant="contained" onClick={handleSubmit} sx={{ backgroundColor: '#8F00FF' }}>
                         Save
                     </Button>
                 </Box>

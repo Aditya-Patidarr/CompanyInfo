@@ -18,7 +18,7 @@ export const reviewFormValidator = [
   body('fullName').notEmpty().withMessage('Full name is required'),
   body('subject').notEmpty().withMessage('Subject is required'),
   body('reviewText').notEmpty().withMessage('Review text is required'),
-  body('rating').isNumeric().isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
+  body('rating').isNumeric().isFloat({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

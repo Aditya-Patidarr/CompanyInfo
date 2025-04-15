@@ -1,10 +1,8 @@
 import React from 'react'
 import { Box, Typography, Dialog, TextField, Button, Rating } from '@mui/material'
 import { useState } from 'react'
-import { useTheme } from '@mui/material/styles'
 import { addReview } from '../services/ratingService.js';
-const AddReview = ({ open, closeForm }) => {
-    const theme = useTheme();
+const AddReview = ({ open, closeForm ,companyId}) => {
     const [formData, setFormData] = useState({
         fullName: "",
         subject: "",
@@ -15,7 +13,7 @@ const AddReview = ({ open, closeForm }) => {
         event.preventDefault();
         const submitData = async () => {
             try {
-                const response = await addReview(formData);
+                const response = await addReview(formData,companyId);
                 console.log(response);
                 console.log('Review added successfully!');
             } catch (error) {
@@ -34,6 +32,7 @@ const AddReview = ({ open, closeForm }) => {
     }
     const handleInputChange = (event) => {
         const { name, value } = event.target;
+        console.log(name,"and",value);
         setFormData({
             ...formData,
             [name]: value,
@@ -111,13 +110,13 @@ const AddReview = ({ open, closeForm }) => {
                         Rating
                     </Typography>
                     <Rating
-                        name="controlled-rating"
-                        value={formData.rating}
+                        name="rating"
+                        value={formData.rating ?? 1}
                         precision={0.5}
                         onChange={handleInputChange}
                     />
                 </Box>
-                <Button onClick={handleSubmit} variant="contained" sx={{ marginLeft: "35%", width: "25%", backgroundColor: theme.palette.primary.main }}>Save
+                <Button onClick={handleSubmit} variant="contained" sx={{ marginLeft: "35%", width: "25%", backgroundColor: '#8F00FF' }}>Save
                 </Button>
 
             </div>

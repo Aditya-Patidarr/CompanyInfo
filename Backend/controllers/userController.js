@@ -24,16 +24,16 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    if (!user || !(await user.comparePassword(password))) {
+    console.log(email," and ",password);
+    const isMatch = await user.comparePassword(password) ;
+    console.log(isMatch);
+    if (!user || !isMatch) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-    res.cookie('authToken',token,{
-        httpOnly:true,
-        secure:false,
-    }) ;
-    res.status(200).json({ message: 'Logged in successfully', });
+    const token = jwt.sign({ userId: user._id.toString() }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    
+    res.status(200).json({ message: 'Logged in successfully',token });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -41,10 +41,6 @@ export const login = async (req, res) => {
 
 
 export const logout = (req, res) => {
-    res.clearCookie('authToken', {
-        httpOnly: true,
-        secure: false,
-    });
-    req.userId = null;
+  req.userId = null;
   res.status(200).json({ message: 'Logged out successfully' });
 };
