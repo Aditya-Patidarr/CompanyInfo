@@ -1,6 +1,6 @@
 import React from 'react'
 import { Box, Typography, Dialog, TextField, Button, Rating } from '@mui/material'
-import { useState } from 'react'
+import { useState,useEffect } from 'react'
 import { addReview } from '../services/ratingService.js';
 const AddReview = ({ open, closeForm ,companyId}) => {
     const [formData, setFormData] = useState({
@@ -9,35 +9,50 @@ const AddReview = ({ open, closeForm ,companyId}) => {
         reviewText: "",
         rating: 0
     });
+    const [errorMsg, setErrorMsg] = useState("");
+    useEffect(() => {
+        if (errorMsg) {
+            const timer = setTimeout(() => {
+                setErrorMsg("");
+            }, 3000); 
+    
+            return () => clearTimeout(timer); 
+        }
+    }, [errorMsg]);
     const handleSubmit = (event) => {
         event.preventDefault();
         const submitData = async () => {
             try {
-                const response = await addReview(formData,companyId);
-                console.log(response);
-                console.log('Review added successfully!');
+                const result = await addReview(formData,companyId);
+                if (!result.success) {
+                    setErrorMsg(result.message); 
+                    return;
+                }
+                console.log('Review added Successfully: ',result.data);
+                setFormData({
+                    fullName: "",
+                    subject: "",
+                    reviewText: "",
+                    rating: 0
+                });
+                closeForm();
+                return;
             } catch (error) {
-                console.error('Error adding review:', error);
+                console.log('Unexpected error:', error);
+                setErrorMsg("Something went wrong. Please try again.");
+                return;
             }
-
         }
         submitData();
-        setFormData({
-            fullName: "",
-            subject: "",
-            reviewText: "",
-            rating: 0
-        });
-        closeForm();
     }
     const handleInputChange = (event) => {
         const { name, value } = event.target;
-        console.log(name,"and",value);
         setFormData({
             ...formData,
             [name]: value,
         });
     }
+    
     return (
         <Dialog open={open} onClose={closeForm} slotProps={{
             paper: {
@@ -53,6 +68,10 @@ const AddReview = ({ open, closeForm ,companyId}) => {
                 justifyContent: 'center',
                 gap: '20px',
             }}>
+                {errorMsg && <p style={{
+                    color: 'red', fontSize: '0.9rem',
+                    marginTop: '10px', fontWeight: 'bold'
+                }}>{errorMsg}</p>}
                 <h1 style={{
                     fontSize: '24px',
                     fontWeight: 700,
@@ -111,7 +130,7 @@ const AddReview = ({ open, closeForm ,companyId}) => {
                     </Typography>
                     <Rating
                         name="rating"
-                        value={formData.rating ?? 1}
+                        value={formData.rating ?? 0}
                         precision={0.5}
                         onChange={handleInputChange}
                     />

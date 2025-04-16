@@ -6,7 +6,7 @@ const ReviewCard = ({ review }) => {
     useEffect(() => {
     }, [review]);
     return (
-        <Box sx={{ display: "flex", width: "100%", height: "150px", justifyContent: "center", alignItems: "center",padding:"0px",margin:"0px",paddingRight:"10px" }}>
+        <Box sx={{ display: "flex", width: "100%", height: "150px", justifyContent: "center", alignItems: "center",padding:"0px",marginTop:"0px",paddingRight:"10px" }}>
             <Box sx={{display:'flex',justifyContent:"space-between"}}>
                 <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
                     <Box sx={{ margin: "0px 20px" }}>
@@ -20,7 +20,7 @@ const ReviewCard = ({ review }) => {
                         <Box display="flex" flexDirection="row" justifyContent="space-between">
                             <Box sx={{ display: "flex", flexDirection: "column" }}>
                                 <Typography variant="subtitle1">{review.fullName}</Typography>
-                                <Typography variant="subtitle2">{review.createdAt}</Typography>
+                                <Typography variant="subtitle2">{review.createdDate}</Typography>
                             </Box>
                         </Box>
                         <Box sx={{ width: "100%" }}>
@@ -31,7 +31,7 @@ const ReviewCard = ({ review }) => {
                 <Box sx={{paddingRight: "40px" }}>
                     <Rating
                         name="rating"
-                        value={review.rating ?? 1}
+                        value={review.rating ?? 0}
                         precision={0.5}
                         readOnly
                     />

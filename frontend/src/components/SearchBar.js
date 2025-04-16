@@ -6,12 +6,12 @@ import AddIcon from '@mui/icons-material/Add';
 import AddCompany from './AddCompany';
 import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
 import CompanyList from './CompanyList';
-const Search = styled("div")(({ theme }) => ({
+const Search = styled(Box)(({ theme }) => ({
   backgroundColor: "white",
-  display:"flex",
+  display: "flex",
   width: "100%",
   padding: "2px 10px",
-  alignItems:"center"
+  alignItems: "center"
 }));
 
 const SearchBox = styled(Box)({
@@ -57,12 +57,13 @@ const SearchBar = () => {
           <SearchBox>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box>
-                <Typography sx={{ paddingLeft: "10px" }} variant='subtitle1' color='grey'>Select City</Typography></Box>
-              <Box>
+                <Typography sx={{ paddingLeft: "10px" }} variant='subtitle1' color='grey'>Select City</Typography>
+              </Box>
+              <Box sx={{position:"relative"}}>
                 <Search>
                   <InputBase placeholder='  Indore, Madhya Pradesh, India' color='black' sx={{ border: '1px solid black', width: "350px" }}>
                   </InputBase>
-                  <LocationOnOutlinedIcon/>
+                  <LocationOnOutlinedIcon sx={{position:"absolute",right:"10px",opacity:0.5}}/>
                 </Search>
               </Box>
             </Box>
@@ -108,11 +109,11 @@ const SearchBar = () => {
               <MenuItem onClick={() => handleClose('Location')}>Location</MenuItem>
             </Menu>
           </Box>
-        </AppBox >
+        </AppBox>
         <Divider sx={{ width: '70%' }} />
-      </Box >
-      <AddCompany open={isFormOpen} closeForm={closeForm} onCompanyAdded={() => setRefreshList(prev => !prev)}  />
-      <CompanyList selectedValue={selectedValue} refresh={refreshList}/>
+      </Box>
+      <AddCompany open={isFormOpen} closeForm={closeForm} onCompanyAdded={() => setRefreshList(prev => !prev)} />
+      <CompanyList selectedValue={selectedValue} refresh={refreshList} />
     </>
 
   )

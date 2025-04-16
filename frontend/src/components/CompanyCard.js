@@ -1,47 +1,46 @@
 import { Typography, CardContent, CardMedia, Box, Button, Rating } from '@mui/material'
 import React, { useEffect, useState } from 'react'
-
-// import pixel from '../assets/sample.jpg';
 import { useNavigate } from 'react-router-dom';
 import { getReviewDataByCompanyId } from '../services/ratingService.js';
 
-const CompanyCard = ({company,companyId }) => {
+const CompanyCard = ({ company, companyId }) => {
   const [reviewData, setReviewData] = useState({
-    averageRating:0,
-    numberOfReviews:0
+    averageRating: 0,
+    numberOfReviews: 0
   });
   const navigate = useNavigate();
 
   const handleClick = () => {
     return navigate('/review', {
       state: {
-        from: 'companyCard', 
+        from: 'companyCard',
         companyId: companyId
       }
     });
-    
+
   }
   useEffect(() => {
     const fetchCompany = async () => {
       try {
         const response = await getReviewDataByCompanyId(companyId);
-        if (!response) {
-          throw new Error('No available companies');
-        }   
+        if (!response.success) {
+          console.log(response.message);
+          return;
+        }
         setReviewData({
-          averageRating:response.averageRating,
-          numberOfReviews:response.totalRatings
+          averageRating: response.data.averageRating,
+          numberOfReviews: response.data.totalRatings
         });
       } catch (error) {
-        console.log('Error fetching company:', error);
+        console.log(error);
       }
     };
     fetchCompany();
   }, [companyId])
-  
+
   return (
     <>
-    
+
       <Box sx={{ display: "flex", width: "100%", justifyContent: "center", alignItems: "center", margin: "40px" }}>
         <Box sx={{ display: "flex", width: "65%", padding: "10px", justifyContent: "space-between", boxShadow: 1 }}>
           <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -64,21 +63,27 @@ const CompanyCard = ({company,companyId }) => {
                   {company.location}
                 </Typography>
               </CardContent>
-              <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1, gap:"8px" }}>
-                <span style={{fontWeight:'bold'}}>{reviewData.averageRating}</span>
+              <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1, gap: "8px" }}>
+                <span style={{ fontWeight: 'bold' }}>{reviewData.averageRating}</span>
                 <Rating
                   name="rating"
-                  value={reviewData.averageRating ?? 1}
+                  value={reviewData.averageRating ?? 0}
                   precision={0.5}
                   readOnly
                 />
-                <span style={{fontWeight:'bold'}}>{reviewData.numberOfReviews} Reviews</span>
+                <span style={{ fontWeight: 'bold' }}>
+                  {reviewData.numberOfReviews === 0 || reviewData.numberOfReviews === undefined
+                    ? 'No Reviews'
+                    : reviewData.numberOfReviews === 1
+                      ? '1 Review'
+                      : `${reviewData.numberOfReviews} Reviews`}
+                </span>
               </Box>
             </Box>
           </Box>
           <Box sx={{ display: "flex", flexDirection: "column", justifyContent: 'space-between' }}>
             <Typography variant="subtitle2" sx={{ margin: "10px 0px", color: "grey" }}>
-            Founded On {company.foundedOn}
+              Founded On {company.createdDate}
             </Typography>
             <Button onClick={handleClick} variant="contained" sx={{ backgroundColor: "	#3f3f3f", margin: "20px 0px" }}>
               Detail Review

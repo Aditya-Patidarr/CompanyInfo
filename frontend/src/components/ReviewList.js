@@ -21,15 +21,16 @@ const ReviewList = () => {
             try {
                 const response = await getReviewsByCompanyId(companyId);
                 const companyResponse = await getCompanyById(companyId);
-                if (!response || !companyResponse) {
-                    throw new Error('Network response was not ok');
-                }
-                console.log("response: ",response);
-                console.log("companyresponse: ",companyResponse);
-                setCompanyData(companyResponse);
-                setReviews(response);
+
+                if (companyResponse.success) setCompanyData(companyResponse.data);
+                else console.log(companyResponse.message);
+                
+                if(response.success) setReviews(response.data);
+                else console.log(response.message);
+                
+                return ;
             } catch (error) {
-                console.error('Error fetching reviews:', error);
+                console.log('Unexpected error:', error);
             }
         };
         fetchReviews();

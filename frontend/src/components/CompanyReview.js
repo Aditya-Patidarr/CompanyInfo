@@ -21,20 +21,22 @@ const CompanyReview = ({ companyId, company, reviews }) => {
     const fetchReviewData = async () => {
       try {
         const response = await getReviewDataByCompanyId(companyId);
-        if (!response) {
-          throw new Error('Network response was not ok');
+        if (!response.success) {
+          console.log(response.message);
+          return;
         }
-        setReviewData(response);
+        setReviewData(response.data);
       } catch (error) {
-        console.error('Error fetching review:', error);
+        console.log('Unexpected error:', error);
       }
     };
     fetchReviewData();
   }, [companyId, reviews])
   return (
+    
     <>
       <Box sx={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center", alignItems: "center", margin: "30px" }}>
-        <Card sx={{ display: 'flex', flexDirection: 'column', width: "60%", padding: "30px", boxShadow: 3 }}>
+        <Card sx={{ display: 'flex', flexDirection: 'column', width: "50%", padding: "30px", boxShadow: 3 }}>
           <Box sx={{ display: "flex", width: "100%", padding: "0px 10px", marginRight: "10px", justifyContent: "space-between", boxShadow: 1 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <CardMedia
@@ -63,14 +65,20 @@ const CompanyReview = ({ companyId, company, reviews }) => {
                   <Box>
                     <Rating
                       name="rating"
-                      value={reviewData.averageRating ?? 1}
+                      value={reviewData.averageRating ?? 0}
                       precision={0.5}
                       sx={{ paddingBottom: "0px" }}
                       readOnly
                     />
                   </Box>
                   <Box>
-                    <span style={{ fontWeight: 'bold' }}>{reviewData.totalRatings} Reviews</span>
+                    <span style={{ fontWeight: 'bold' }}>
+                    {reviewData.totalRatings === 0 || reviewData.totalRatings === undefined
+                    ? 'No Reviews'
+                    : reviewData.totalRatings === 1
+                      ? '1 Review'
+                      : `${reviewData.totalRatings} Reviews`}
+                    </span>
                   </Box>
                 </Box>
               </Box>
@@ -85,10 +93,12 @@ const CompanyReview = ({ companyId, company, reviews }) => {
             </Box>
           </Box>
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
+            <Box sx={{marginBottom:"50px"}}>
             {reviews.map((review) => (
               <ReviewCard key={review._id} review={review} />
             ))}
-            <Button onClick={handleButton} variant="contained" sx={{ backgroundColor: '#8F00FF' }}>Back to Dashboard</Button>
+            </Box>
+            <Button onClick={handleButton} variant="contained" sx={{ marginTop:"20px",backgroundColor: '#8F00FF' }}>Back to Dashboard</Button>
           </Box>
         </Card>
       </Box>
